@@ -14,7 +14,9 @@ resource "aws_kms_key" "s3_bucket_encrypt_key" {
 # Public bucket
 resource "aws_s3_bucket" "public" {
   count = local.create_private_bucket ? 0 : 1
+
   bucket = "${local.prefix}-${local.project}-${local.environment}-s3-bucket-${local.region_code}-public"
+  force_destroy = var.force_destroy
 
   tags = merge(var.tags, {
     ApplicationRole = "AWS S3 Public Bucket"
@@ -26,6 +28,7 @@ resource "aws_s3_bucket" "public" {
 # Encryption for s3 bucket public
 resource "aws_s3_bucket_server_side_encryption_configuration" "public" {
   count = local.create_private_bucket ? 0 : 1
+
   bucket = aws_s3_bucket.public[count.index].id
 
   rule {
@@ -39,6 +42,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "public" {
 # Bucket public access block
 resource "aws_s3_bucket_public_access_block" "block" {
   count = local.create_private_bucket ? 0 : 1
+
   bucket = aws_s3_bucket.public[count.index].id
 
   block_public_acls = false 
@@ -47,11 +51,34 @@ resource "aws_s3_bucket_public_access_block" "block" {
   restrict_public_buckets = false
 }
 
+# Bucket policy for public access
+resource "aws_s3_bucket_policy" "public_read_access" {
+  count = local.create_private_bucket ? 0 : 1
+
+  bucket = aws_s3_bucket.public[count.index].id  
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": [ "s3:GetObject", "s3:ListBucket" ],
+        "Resource": [
+          "${aws_s3_bucket.public[count.index].arn}",
+          "${aws_s3_bucket.public[count.index].arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
 # Private bucket
 resource "aws_s3_bucket" "private" {
   count = local.create_private_bucket ? 1 : 0
+
   bucket = "${local.prefix}-${local.project}-${local.environment}-s3-bucket-${local.region_code}-private"
-    
+  force_destroy = var.force_destroy
+
   tags = merge(var.tags, {
     ApplicationRole = "AWS S3 private Bucket"
     SensitiveData   = "true"
@@ -62,6 +89,7 @@ resource "aws_s3_bucket" "private" {
 # Encryption for s3 bucket private
 resource "aws_s3_bucket_server_side_encryption_configuration" "private" {
   count = local.create_private_bucket ? 1 : 0
+
   bucket = aws_s3_bucket.private[count.index].id
 
   rule {
@@ -71,4 +99,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "private" {
     }
   }
 }
+
+
 
