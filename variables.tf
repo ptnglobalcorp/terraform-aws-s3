@@ -10,6 +10,11 @@ variable "region_code" {
   type = string
 }
 
+variable "prefix" {
+  type = string
+  default = "ptn"
+}
+
 variable "project" {
   type = string
 }

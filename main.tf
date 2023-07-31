@@ -1,4 +1,5 @@
 locals {
+  prefix = var.prefix
   project = var.project
   environment = var.environment
   region_code = var.region_code
@@ -13,7 +14,7 @@ resource "aws_kms_key" "s3_bucket_encrypt_key" {
 # Public bucket
 resource "aws_s3_bucket" "public" {
   count = local.create_private_bucket ? 0 : 1
-  bucket = "oc-${local.project}-${local.environment}-s3-bucket-${local.region_code}-public"
+  bucket = "${local.prefix}-${local.project}-${local.environment}-s3-bucket-${local.region_code}-public"
 
   tags = merge(var.tags, {
     ApplicationRole = "AWS S3 Public Bucket"
@@ -49,7 +50,7 @@ resource "aws_s3_bucket_public_access_block" "block" {
 # Private bucket
 resource "aws_s3_bucket" "private" {
   count = local.create_private_bucket ? 1 : 0
-  bucket = "oc-${local.project}-${local.environment}-s3-bucket-${local.region_code}-private"
+  bucket = "${local.prefix}-${local.project}-${local.environment}-s3-bucket-${local.region_code}-private"
     
   tags = merge(var.tags, {
     ApplicationRole = "AWS S3 private Bucket"
@@ -71,56 +72,3 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "private" {
   }
 }
 
-# IAM User for accessing private S3 bucket
-resource "aws_iam_user" "s3_bucket_private_access" {
-  count = local.create_private_bucket ? 1 : 0
-  name = "oc-${local.project}-${local.environment}-iam-user-${local.region_code}-bucket" # Define name of aws iam user
-
-  tags = merge(var.tags, {
-    ApplicationRole = "AWS User for access private S3 Bucket"
-  })
-}
-
-# IAM Access Key for the above IAM user to access S3 bucket
-resource "aws_iam_access_key" "s3_bucket_private_access" {
-  count = local.create_private_bucket ? 1 : 0
-  user = aws_iam_user.s3_bucket_private_access[count.index].name # create access key for s3 private bucket access
-}
-
-# User policy for access private bucket
-resource "aws_iam_user_policy" "s3_bucket_private_access" {
-  count = local.create_private_bucket ? 1 : 0
-  name = "oc-${local.project}-${local.environment}-iam-user-policy-bucket" # define name of iam user policy
-  user = aws_iam_user.s3_bucket_private_access[count.index].name # pass the user of iam user private bucket
-
-  # Pass policy with JSON 
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [  
-      {
-        Sid    = "VisualEditor0"
-        Effect = "Allow"
-        Action = [
-          "s3:ListBucketMultipartUploads",
-          "s3:ListBucket",
-          "s3:GetBucketLocation"
-        ]
-        Resource = ["${aws_s3_bucket.private[count.index].arn}"] # Pass the resource attach to policy
-      },
-      {
-        Sid    = "VisualEditor1"
-        Effect = "Allow"
-        Action = [
-          "s3:PutObject",
-          "s3:GetObject",
-          "s3:AbortMultipartUpload",
-          "s3:GetObjectTagging",
-          "s3:PutObjectTagging",
-          "s3:DeleteObject",
-          "s3:ListMultipartUploadParts"
-        ]
-        Resource = ["${aws_s3_bucket.private[count.index].arn}/*"] # Pass the resource attach to policy
-      }, 
-    ]
-  })
-}
