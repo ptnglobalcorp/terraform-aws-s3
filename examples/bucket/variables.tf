@@ -30,14 +30,14 @@ variable "project" {
 
 variable "create_private_bucket" {
   description = "Create private bucket"
-  type        = bool
-  default     = false
+  type = bool
+  default = false
 }
 
 variable "tags" {
   description = "(Optional) A mapping of tags to assign to the bucket."
-  type        = map(string)
-  default     = {}
+  type = map(string)
+  default = {}
 }
 
 variable "force_destroy" {

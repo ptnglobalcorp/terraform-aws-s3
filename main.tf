@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "public" {
 
   tags = merge(var.tags, {
     ApplicationRole = "AWS S3 Public Bucket"
-    SensitiveData   = "true"
+    SensitiveData = "true"
     Environment = local.environment
   })
 }
@@ -81,7 +81,7 @@ resource "aws_s3_bucket" "private" {
 
   tags = merge(var.tags, {
     ApplicationRole = "AWS S3 private Bucket"
-    SensitiveData   = "true"
+    SensitiveData = "true"
     Environment = local.environment
   })
 }
