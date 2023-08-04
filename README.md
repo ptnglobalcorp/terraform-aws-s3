@@ -86,12 +86,12 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_create_private_bucket"></a> [create\_private\_bucket](#input\_create\_private\_bucket) | Create private bucket | `bool` | `false` | no |
-| <a name="input_environment"></a> [environment](#input\_environment) | Environment for the infrastructure | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | Environment for the infrastructure | `string` | `"dev"` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | True or False | `bool` | `false` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for name of resource | `string` | `"ptn"` | no |
-| <a name="input_project"></a> [project](#input\_project) | Name of project | `string` | n/a | yes |
-| <a name="input_region"></a> [region](#input\_region) | Region name | `string` | n/a | yes |
-| <a name="input_region_code"></a> [region\_code](#input\_region\_code) | n/a | `string` | `"Region code for development"` | no |
+| <a name="input_project"></a> [project](#input\_project) | Name of project | `string` | `""` | no |
+| <a name="input_region"></a> [region](#input\_region) | Region name | `string` | `""` | no |
+| <a name="input_region_code"></a> [region\_code](#input\_region\_code) | Region code for development | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A mapping of tags to assign to the bucket. | `map(string)` | `{}` | no |
 
 ## Outputs
