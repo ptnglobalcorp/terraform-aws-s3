@@ -1,31 +1,26 @@
 variable "environment" {
   description = "Environment for the infrastructure"
   type = string
-  default = ""
 }
 
 variable "region" {
   description = "Region name"
   type = string
-  default = ""
 }
 
 variable "region_code" {
   description = "Region code for development"
   type = string
-  default = ""
 }
 
 variable "prefix" {
   description = "Prefix for name of resource"
   type = string
-  default = "ptn"
 }
 
 variable "project" {
   description = "Name of project"
   type = string
-  default = ""
 }
 
 variable "create_private_bucket" {
