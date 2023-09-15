@@ -1,6 +1,6 @@
 
 <!-- markdownlint-disable -->
-# AWS S3 bucket Terraform module [![Latest Release](https://img.shields.io/github/v/release/oysptn/terraform-aws-s3.svg)](https://github.com/oysptn/terraform-aws-s3/releases/latest)
+# AWS S3 bucket Terraform module [![Latest Release](https://img.shields.io/github/v/release/ptnglobalcorp/terraform-aws-s3.svg)](https://github.com/ptnglobalcorp/terraform-aws-s3/releases/latest)
 <!-- markdownlint-restore -->
 
 This project is part the boilderplate project for all of my terraform modules, which are all licensed under the [APACHE2](LICENSE).
